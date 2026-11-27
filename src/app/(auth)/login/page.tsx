@@ -44,14 +44,14 @@ export default async function LoginPage({
           <div className="mb-6">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E6F4EF] px-2.5 py-1 text-[11px] font-mono font-medium text-[#0D6E52]">
               <ShieldCheck size={14} weight="bold" />
-              Autentikasi Google OAuth
+              Supabase Cloud Auth
             </span>
             <h1 className="text-2xl font-bold tracking-tight text-[#141916] mt-3">
               Masuk ke SakuRuang
             </h1>
             <p className="text-sm text-[#5A655E] mt-1 leading-relaxed">
-              Gunakan akun Google Anda untuk mengakses ruang keuangan pribadi
-              maupun ruang keluarga tanpa perlu menghafal kata sandi baru.
+              Masuk atau daftar akun baru untuk mengakses ruang keuangan pribadi
+              maupun ruang keluarga Anda.
             </p>
           </div>
 

@@ -25,6 +25,27 @@ export function GoogleSignInButton({
     setIsLoading(true);
 
     try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (supabaseUrl && supabaseKey) {
+        const settingsRes = await fetch(`${supabaseUrl}/auth/v1/settings`, {
+          headers: { apikey: supabaseKey },
+        });
+        if (settingsRes.ok) {
+          const settings = (await settingsRes.json()) as {
+            external?: { google?: boolean };
+          };
+          if (settings.external && settings.external.google === false) {
+            setErrorMessage(
+              "Provider Google belum diaktifkan di Supabase Dashboard (Authentication → Providers → Google). Anda bisa langsung daftar/masuk dengan Email di bawah tanpa perlu Google Cloud Console."
+            );
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
+
       const supabase = createSupabaseBrowserClient();
       const callbackUrl = new URL("/auth/callback", window.location.origin);
       if (nextPath && nextPath.startsWith("/") && nextPath !== "/dashboard") {
@@ -43,12 +64,7 @@ export function GoogleSignInButton({
       });
 
       if (error) {
-        const friendly = error.message
-          .toLowerCase()
-          .includes("provider is not enabled")
-          ? "Login Google belum diaktifkan di Supabase Dashboard (Authentication → Providers → Google)."
-          : error.message;
-        setErrorMessage(friendly);
+        setErrorMessage(error.message);
         setIsLoading(false);
       }
     } catch (err) {
@@ -77,16 +93,16 @@ export function GoogleSignInButton({
         type="button"
         disabled={isLoading}
         onClick={handleGoogleLogin}
-        className="group min-h-[48px] w-full rounded-xl bg-[#141916] hover:bg-[#0D6E52] active:scale-[0.99] disabled:opacity-60 text-white px-5 py-3 text-sm font-semibold flex items-center justify-between gap-3 transition-colors cursor-pointer"
+        className="group min-h-[46px] w-full rounded-xl bg-white hover:bg-[#F6F7F4] active:scale-[0.99] disabled:opacity-60 text-[#141916] border border-[#141916]/[0.14] px-4 py-2.5 text-sm font-semibold flex items-center justify-between gap-3 transition-colors cursor-pointer"
       >
         <span className="flex items-center gap-2.5">
-          <GoogleLogo size={18} weight="bold" />
+          <GoogleLogo size={18} weight="bold" className="text-[#0D6E52]" />
           <span>{isLoading ? "Menghubungkan ke Google..." : label}</span>
         </span>
         <ArrowRight
-          size={16}
+          size={15}
           weight="bold"
-          className="group-hover:translate-x-0.5 transition-transform"
+          className="text-[#5A655E] group-hover:translate-x-0.5 transition-transform"
         />
       </button>
     </div>
